@@ -116,7 +116,7 @@ def tobs():
 
     return jsonify(all_tobs)
 
-@app.route("/api/v1.0/start")
+@app.route("/api/v1.0/<start_date>")
 
 #Return a JSON list of the minimum temperature,
 #the average temperature, and the max temperature for a given start or start-end range.
@@ -127,7 +127,7 @@ def tobs():
 def calc_temp_start(start_date):
     
     results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-              filter(Measurement.date >= start_date).order_by(Measurement.date.desc()).all()
+              filter(Measurement.date >= start_date).all()
     
     calc_tobs=[]
     for row in results:
@@ -138,12 +138,12 @@ def calc_temp_start(start_date):
         calc_tobs.append(calc_tobs_dict)
 
     return jsonify(calc_tobs)
-@app.route("/api/v1.0/start/end")
+@app.route("/api/v1.0/<start_date>/<end_date>")
 
 def calc_temp_startend(start_date,end_date):         
-    """ When given the start and the end date, calculate the `TMIN`, `TAVG`, and `TMAX` for dates between the start and end date inclusive. """    
+     
     results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs),func.max(Measurement.tobs)).\
-                  filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).order_by(Measurement.date.desc()).all()
+                  filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
     # Convert the query results to a Dictionary using date as the key and tobs as the value.
     calc_tobs=[]
     for row in results:
